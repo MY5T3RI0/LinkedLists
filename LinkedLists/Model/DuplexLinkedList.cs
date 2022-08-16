@@ -7,17 +7,29 @@ using System.Threading.Tasks;
 
 namespace LinkedLists.Model
 {
-    public class SimpleLinkedList<T> : IEnumerable
+    public class DuplexLinkedList<T> : IEnumerable
     {
-        public Item<T> Head { get; private set; }
+        public DuplexItem<T> Head { get; private set; }
 
-        public Item<T> Tail { get; private set; }
+        public DuplexItem<T> Tail { get; private set; }
 
-        public int Count { get; private set; } 
+        public int Count { get; private set; }
 
-        public SimpleLinkedList()
+        public DuplexLinkedList()
         {
             Clear();
+        }
+
+        public DuplexLinkedList(T data)
+        {
+            SetHeadAndTail(data);
+        }
+        private void SetHeadAndTail(T data)
+        {
+            var item = new DuplexItem<T>(data);
+            Head = item;
+            Tail = item;
+            Count++;
         }
 
         public void Clear()
@@ -27,27 +39,16 @@ namespace LinkedLists.Model
             Count = 0;
         }
 
-        public SimpleLinkedList(T data)
-        {
-            SetHeadAndTail(data);
-        }
-
-        private void SetHeadAndTail(T data)
-        {
-            var item = new Item<T>(data);
-            Head = item;
-            Tail = item;
-            Count++;
-        }
-
         public void Add(T data)
         {
             if (Count > 0)
             {
-                var item = new Item<T>(data);
+                var item = new DuplexItem<T>(data);
+
+                item.Previous = Tail;
                 Tail.Next = item;
                 Tail = item;
-                Count++;
+                Count++; 
             }
             else
             {
@@ -63,33 +64,52 @@ namespace LinkedLists.Model
                 return;
             }
 
-            var previous = Head;
-            var current = Head.Next;
+            var current = Head;
+
             while (current != null)
             {
-                if (Head.Data.Equals(data))
-                {
-                    Head = Head.Next;
-                    Count--;
-                    return;
-                }
                 if (current.Data.Equals(data))
                 {
+                    if (Head.Data.Equals(data))
+                    {
+                        Head = Head.Next;
+                        Head.Previous = null;
+                        Count--;
+                        return;
+                    }
                     if (Tail.Data.Equals(data))
                     {
-                        Tail = previous;
+                        Tail = Tail.Previous;
                         Tail.Next = null;
                         Count--;
                         return;
                     }
-                    previous.Next = current.Next;
+                    current.Previous.Next = current.Next;
+                    current.Next.Previous = current.Previous;
                     Count--;
                     return;
                 }
 
-                previous = previous.Next;
                 current = current.Next;
             }
+        }
+
+        public DuplexLinkedList<T> Reverse()
+        {
+            var NewList = new DuplexLinkedList<T>();
+
+            if (Count > 0)
+            {
+                var current = Tail;
+
+                while (current != null)
+                {
+                    NewList.Add(current.Data);
+                    current = current.Previous;
+                }
+            }
+            return NewList;
+
         }
 
         public IEnumerator GetEnumerator()
@@ -105,7 +125,7 @@ namespace LinkedLists.Model
 
         public override string ToString()
         {
-            return $"Связный список с {Count} элементов";
+            return $"Двусвязный список с {Count} элементов";
         }
     }
 }
