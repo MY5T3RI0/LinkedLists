@@ -7,31 +7,69 @@ using System.Threading.Tasks;
 
 namespace LinkedLists.Model
 {
+    /// <summary>
+    /// Двусвязный список.
+    /// </summary>
+    /// <typeparam name="T">Данные элементов.</typeparam>
     public class DuplexLinkedList<T> : IEnumerable
     {
+        /// <summary>
+        /// Головной элемент.
+        /// </summary>
         public DuplexItem<T> Head { get; private set; }
 
+        /// <summary>
+        /// Хвостовой элемент.
+        /// </summary>
         public DuplexItem<T> Tail { get; private set; }
 
+        /// <summary>
+        /// Размер.
+        /// </summary>
         public int Count { get; private set; }
 
+        /// <summary>
+        /// СОздать пустой список.
+        /// </summary>
         public DuplexLinkedList()
         {
             Clear();
         }
 
+        /// <summary>
+        /// Создать новый список.
+        /// </summary>
+        /// <param name="data">Данные нового элемента.</param>
         public DuplexLinkedList(T data)
         {
+            if (data.Equals(default(T)))
+            {
+                throw new ArgumentNullException(nameof(data), "Элемент не может быть нулевым");
+            }
+
             SetHeadAndTail(data);
         }
+
+        /// <summary>
+        /// Добавить элемент в качестве головного и хвостового.
+        /// </summary>
+        /// <param name="data">Данные нового элемента.</param>
         private void SetHeadAndTail(T data)
         {
+            if (data.Equals(default(T)))
+            {
+                throw new ArgumentNullException(nameof(data), "Элемент не может быть нулевым");
+            }
+
             var item = new DuplexItem<T>(data);
             Head = item;
             Tail = item;
             Count++;
         }
 
+        /// <summary>
+        /// Очистить список.
+        /// </summary>
         public void Clear()
         {
             Head = null;
@@ -39,8 +77,17 @@ namespace LinkedLists.Model
             Count = 0;
         }
 
+        /// <summary>
+        /// Добавить элемент.
+        /// </summary>
+        /// <param name="data">Данные нового элемента.</param>
         public void Add(T data)
         {
+            if (data.Equals(default(T)))
+            {
+                throw new ArgumentNullException(nameof(data), "Элемент не может быть нулевым");
+            }
+
             if (Count > 0)
             {
                 var item = new DuplexItem<T>(data);
@@ -56,8 +103,17 @@ namespace LinkedLists.Model
             }
         }
 
+        /// <summary>
+        /// Удалить элемент.
+        /// </summary>
+        /// <param name="data">Данные удаляемого элемента.</param>
         public void Delete(T data)
         {
+            if (data.Equals(default(T)))
+            {
+                throw new ArgumentNullException(nameof(data), "Элемент не может быть нулевым");
+            }
+
             if (Count == 1)
             {
                 Clear();
@@ -94,6 +150,10 @@ namespace LinkedLists.Model
             }
         }
 
+        /// <summary>
+        /// Реверсировать список.
+        /// </summary>
+        /// <returns>Реверсированный двусвязный список.</returns>
         public DuplexLinkedList<T> Reverse()
         {
             var NewList = new DuplexLinkedList<T>();
